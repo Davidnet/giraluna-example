@@ -1,0 +1,72 @@
+# PIPELINE DEFINITION
+# Name: pipeline-to-say-hi
+# Inputs:
+#    name_user: str [Default: 'David']
+components:
+  comp-say-bye-component:
+    executorLabel: exec-say-bye-component
+    inputDefinitions:
+      parameters:
+        name:
+          parameterType: STRING
+  comp-say-hi-component:
+    executorLabel: exec-say-hi-component
+    inputDefinitions:
+      parameters:
+        name:
+          parameterType: STRING
+deploymentSpec:
+  executors:
+    exec-say-bye-component:
+      container:
+        args:
+        - print("Bye, {{$.inputs.parameters['name']}}!")
+        command:
+        - python
+        - -c
+        image: python:3.11-alpine3.18
+    exec-say-hi-component:
+      container:
+        args:
+        - print("Hi, {{$.inputs.parameters['name']}}!")
+        command:
+        - python
+        - -c
+        image: python:3.11-alpine3.18
+pipelineInfo:
+  name: pipeline-to-say-hi
+root:
+  dag:
+    tasks:
+      say-bye-component:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-say-bye-component
+        dependentTasks:
+        - say-hi-component
+        inputs:
+          parameters:
+            name:
+              componentInputParameter: name_user
+        taskInfo:
+          name: say-bye-component
+      say-hi-component:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-say-hi-component
+        inputs:
+          parameters:
+            name:
+              componentInputParameter: name_user
+        taskInfo:
+          name: say-hi-component
+  inputDefinitions:
+    parameters:
+      name_user:
+        defaultValue: David
+        isOptional: true
+        parameterType: STRING
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.0.1

@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "giraluna-example"
+version = "0.1.0"
+description = ""
+authors = ["David Cardozo <david@updata.ca>"]
+readme = "README.md"
+packages = [{include = "giraluna_example"}]
+
+[tool.poetry.dependencies]
+python = "~3.10"
+kfp = {extras = ["all"], version = "^2.0.1"}
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.23.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
